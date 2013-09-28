@@ -6,7 +6,7 @@ greenlet==0.4.1
 pyasn1==0.1.7
 pyasn1-modules==0.0.5
 sleekxmpp==1.1.11
-python-potr
-pycrypto
-ipython
+python-potr==1.0.0b7
+pycrypto==2.6
+ipython==1.1.0
 django-sse==0.4.1
