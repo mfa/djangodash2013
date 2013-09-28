@@ -18,9 +18,10 @@ class PGEventsView(BaseSseView):
         # and channel should be a channel that has an attached
         # EventSource listener on the client side
         message = json.loads(message)
-        return message[0], message[1]
+        return (message[0], message[1])
 
     def iterator(self):
-        for message in pg_listen(self.pg_channel):
-            message = self.handle_message(message)
-            self.sse.add_message(message[0], message[1])
+        while True:
+            for message in pg_listen(self.pg_channel):
+                message = self.handle_message(message)
+                self.sse.add_message(message[0], message[1])
