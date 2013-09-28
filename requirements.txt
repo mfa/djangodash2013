@@ -1,0 +1,7 @@
+Django==1.5.4
+dnspython==1.11.1
+gevent==0.13.8
+greenlet==0.4.1
+pyasn1==0.1.7
+pyasn1-modules==0.0.5
+sleekxmpp==1.1.11
