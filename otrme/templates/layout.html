@@ -35,12 +35,21 @@
     </div>
     <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
       <ul class="nav navbar-nav">
+	{% if not user.is_authenticated %}
         <li>
           <a href="/register">Register</a>
         </li>
         <li>
-          <a href="/events">Events</a>
+          <a href="{% url 'login' %}">login</a>
         </li>
+	{% else %}
+        <li>
+	  <a href="#">logged in as {{ user.username }}</a>
+        </li>
+        <li>
+	  <a href="{% url 'logout' %}">logout</a>
+        </li>
+	{% endif %}
       </ul>
     </nav>
   </div>
@@ -51,10 +60,10 @@
       <div class="container" ng-app="OtrMe" ng-controller="ChatCtrl">
 	{% block content %}
 	{% verbatim %}
-	<h1>Chat with <b>{{ current_user }}</b></h1>
+	<h1>Chat with <b>{{ current_user_name }}</b></h1>
 	<div class="row">
 	  <div class="col-md-9">
-	<div class="row" ng-repeat="message in messages[current_user] | orderBy:message_order">
+	<div class="row" ng-repeat="message in messages[current_user_name] | orderBy:'time'">
 	  <div class="col-md-8">
 	    <div class="row">
 	      <div class="col-md-8">
@@ -100,11 +109,11 @@
 	  <div class="col-md-3">
 	    <h3>Online Users</h3>
 	    <ul>
-	      <li ng-repeat="user in users | orderBy:user_order | filter:{status:'Online'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ user.unread }}</b></dt>
+	      <li ng-repeat="user in users | orderBy:'name' | filter:{status:'Online'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ pretty_unread(user.unread) }}</b></dt>
 	    </ul>
 	    <h3>Away Users</h3>
 	    <ul>
-	      <li ng-repeat="user in users | orderBy:user_order | filter:{status:'Away'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ user.unread }}</b></dt>
+	      <li ng-repeat="user in users | orderBy:'name' | filter:{status:'Away'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ pretty_unread(user.unread) }}</b></dt>
 	    </ul>
 	  </div>
 	{% endverbatim %}
