@@ -9,6 +9,7 @@ class PGEventsView(BaseSseView):
         # so we should be able to get this from request.user
         # alternatives welcome
         self.pg_channel = request.user.username
+        super(self, PGEventsView).dispatch(request, *args, **kwargs)
 
     def handle_message(self, message):
         # this can be overridden for alternative behavior
