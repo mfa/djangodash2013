@@ -1,0 +1,52 @@
+body {
+  position: relative;
+  padding-top: 50px;
+}
+
+.bs-footer {
+  padding-top: 40px;
+  padding-bottom: 30px;
+  margin-top: 100px;
+  color: #777;
+  text-align: center;
+  border-top: 1px solid #e5e5e5;
+}
+.bs-social {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.bs-social-buttons {
+  display: inline-block;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+.bs-social-buttons li {
+  display: inline-block;
+  line-height: 1;
+  padding: 5px 8px;
+}
+.github-btn {
+  border: 0;
+  overflow: hidden;
+}
+
+@media screen and (min-width: 768px) {
+  .bs-social {
+    text-align: left;
+  }
+  .bs-social-buttons li:first-child {
+    padding-left: 0;
+  }
+}
+
+#content {
+    min-height: 85%;
+}
+
+footer {
+    margin-top: 50px;
+    text-align: center;
+    padding-top: 10px;
+}

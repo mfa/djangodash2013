@@ -1,0 +1,78 @@
+<!DOCTYPE html>{% load static from staticfiles %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>otrme.de</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/otrme.css' %}" rel="stylesheet">
+
+    <link rel="shortcut icon" href="{% static 'assets/favicon.png' %}">
+
+    {% block head %}
+    {% endblock %}
+
+  </head>
+  <body class="bs-docs-home">
+    <a class="sr-only" href="#content">Skip navigation</a>
+
+    <!-- Docs master nav -->
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">OTRme</a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="/register">Register</a>
+        </li>
+        <li>
+          <a href="/events">Events</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+    <!-- Page content of course! -->
+    <main class="bs-masthead" id="content" role="main">
+      <div class="container">
+	{% block content %}
+	<h1>Mainpage</h1>
+	{% endblock %}
+      </div>
+    </main>
+
+
+    <footer class="container" role="contentinfo">
+      <div class="bs-social">
+	<ul class="bs-social-buttons">
+	  <li>
+	    <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=mfa&amp;repo=djangodash2013&amp;type=watch&amp;count=true" width="100" height="20" title="Star on GitHub"></iframe>
+	  </li>
+	  <li>
+	    <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=mfa&amp;repo=djangodash2013&amp;type=fork&amp;count=true" width="102" height="20" title="Fork on GitHub"></iframe>
+	  </li>
+	</ul>
+      </div>
+    </footer>
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'js/boostrap.js' %}"></script>
+{#<script src="{% static 'js/holder.js' %}"></script>#}
+
+  </body>
+</html>
