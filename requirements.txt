@@ -6,3 +6,4 @@ greenlet==0.4.1
 pyasn1==0.1.7
 pyasn1-modules==0.0.5
 sleekxmpp==1.1.11
+django-sse==0.4.1
