@@ -23,6 +23,8 @@ urlpatterns = patterns('',
 
     url(r'^events/?$',
         PGEventsView.as_view()),
+    url(r'^login/$',
+        'django.contrib.auth.views.login'),
 )
 
 if settings.DEBUG:

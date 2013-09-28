@@ -153,3 +153,9 @@ LOGGING = {
         }
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    'jabber.auth_backend.JabberAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+

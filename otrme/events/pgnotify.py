@@ -9,7 +9,7 @@ def pg_listen(channel):
     pg_con = connection.connection
     pg_con.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
     crs.execute('LISTEN %s;' % channel);
- 
+
     while True:
         if select.select([pg_con], [], [], 5) == ([], [], []):
             continue # Timeout
