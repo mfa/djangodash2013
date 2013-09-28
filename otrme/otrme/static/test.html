@@ -1,0 +1,12 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var source = new EventSource('http://localhost:8000/events/');
+      source.addEventListener('test', function(event) {
+        alert(event.data);
+      }, false);
+    </script>
+  </body>
+</html>
