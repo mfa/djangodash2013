@@ -83,7 +83,7 @@ class MyOtrContextManager:
             # attempt to pass the message through *potr.context.Context.receiveMessage*
             # there are a couple of possible cases
             res = otrctx.receiveMessage(msg["body"])
-        except potr.context.UnencryptedMessage, message:
+        except potr.context.UnencryptedMessage:
             # potr raises an UnencryptedMessage exception when a message is
             # unencrypted but the context is encrypted
             # this indicates a plaintext message came through a supposedly encrypted
@@ -115,6 +115,8 @@ class MyOtrContextManager:
             logging.getLogger().debug("sending message unencrypted")
             otrctx.inject(msg)
 
+
+# usage example:
 if __name__ == '__main__':
     import types
 
@@ -126,7 +128,6 @@ if __name__ == '__main__':
 
     def bob_to_alice(self, msg, appdata=None):
         print "Bob => Alice: %s" % msg
-        print appdata
         alice.incoming({
             'from': 'bob',
             'body': msg,
@@ -136,7 +137,6 @@ if __name__ == '__main__':
 
     def alice_to_bob(self, msg, appdata=None):
         print "Alice => Bob: %s" % msg
-        print appdata
         bob.incoming({
             'from': 'alice',
             'body': msg,
@@ -147,11 +147,6 @@ if __name__ == '__main__':
     bob.context_to('alice').inject('Hello World!')
     alice.context_to('bob').inject('Hello World!')
 
-    print ''
-    print ''
-    print ''
-
-
     alice_con_bob = alice.context_to('bob')
     inv_msg = alice_con_bob.sendMessage(
         alice_con_bob.getPolicy('ALLOW_V2'), ''
@@ -160,9 +155,3 @@ if __name__ == '__main__':
 
     alice.outgoing('bob', 'Hello World!')
     bob.outgoing('alice', 'Hello Alice')
-
-
-
-
-
-
