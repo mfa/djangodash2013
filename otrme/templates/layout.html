@@ -48,9 +48,66 @@
 
     <!-- Page content of course! -->
     <main class="bs-masthead" id="content" role="main">
-      <div class="container">
+      <div class="container" ng-app="OtrMe" ng-controller="ChatCtrl">
 	{% block content %}
-	<h1>Mainpage</h1>
+	{% verbatim %}
+	<h1>Chat with <b>{{ current_user }}</b></h1>
+	<div class="row">
+	  <div class="col-md-9">
+	<div class="row" ng-repeat="message in messages[current_user] | orderBy:message_order">
+	  <div class="col-md-8">
+	    <div class="row">
+	      <div class="col-md-8">
+		<h4><strong><a href="#">{{ message.user }}</a></strong></h4>
+	      </div>
+	    </div>
+	    <div class="row">
+	      <div class="col-md-2">
+		<div class="thumbnail">
+		  <img src="http://placehold.it/300x300" alt="">
+		</div>
+	      </div>
+	      <div class="col-md-6">
+		<p>
+		  {{ message.message }}
+		</p>
+	      </div>
+	    </div>
+	    <div class="row">
+	      <div class="col-md-8">
+		<p>
+		  <span class="glyphicon glyphicon-time"></span> {{ message.time }}
+		</p>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="row">
+	  <div class="col-md-8 well">
+	    <form accept-charset="UTF-8" action="" method="POST">
+	      <div class="row">
+		<textarea class="col-md-8" id="new_message" name="new_message"
+			  placeholder="Type in your message" rows="5"></textarea>
+	      </div>
+	      <div class="row">
+		<button class="btn btn-info" type="submit">Post New Message</button>
+	      </div>
+	    </form>
+	  </div>
+	</div>
+	  </div>
+	  <div class="col-md-3">
+	    <h3>Online Users</h3>
+	    <ul>
+	      <li ng-repeat="user in users | orderBy:user_order | filter:{status:'Online'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ user.unread }}</b></dt>
+	    </ul>
+	    <h3>Away Users</h3>
+	    <ul>
+	      <li ng-repeat="user in users | orderBy:user_order | filter:{status:'Away'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ user.unread }}</b></dt>
+	    </ul>
+	  </div>
+	{% endverbatim %}
 	{% endblock %}
       </div>
     </main>
@@ -71,7 +128,11 @@
 
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{% static 'js/jquery.js' %}"></script>
-<script src="{% static 'js/boostrap.js' %}"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+<script src="{% static 'js/angular.js' %}"></script>
+<script src="{% static 'js/app/controllers.js' %}"></script>
+<script src="{% static 'js/app/services.js' %}"></script>
+<script src="{% static 'js/app/app.js' %}"></script>
 {#<script src="{% static 'js/holder.js' %}"></script>#}
 
   </body>
