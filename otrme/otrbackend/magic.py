@@ -6,6 +6,7 @@ import potr
 import os
 import logging
 logging.basicConfig(level=logging.DEBUG)
+from django.core.cache import cache
 
 log = logging.getLogger()
 
@@ -43,29 +44,21 @@ class OTRContext(potr.context.Context):
     def finished_context(self):
         return self.getState() == potr.STATE_FINISHED
 
+
 class OTRAccount(potr.context.Account):
 
     def __init__(self, jid):
-        print jid
         super(OTRAccount, self).__init__(jid, '-', 1024)
-        self.keyFilePath = os.path.join("/tmp/otr", jid)
+        self.key = 'privatekey-%s.key3' % jid
 
     def loadPrivkey(self):
-        # load key from jabber backend and store in RAM!
-        try:
-            with open(self.keyFilePath + '.key3', 'rb') as keyFile:
-                return potr.crypt.PK.parsePrivateKey(keyFile.read())[0]
-        except IOError:
-            pass
+        x = cache.get(self.key)
+        if x:
+            return potr.crypt.PK.parsePrivateKey(x)[0]
         return None
 
     def savePrivkey(self):
-        # save to RAM
-        try:
-            with open(self.keyFilePath + '.key3', 'wb') as keyFile:
-                keyFile.write(self.getPrivkey().serializePrivateKey())
-        except IOError:
-            pass
+        cache.set(self.key, self.getPrivkey().serializePrivateKey())
 
 
 class OTRContextManager(object):
