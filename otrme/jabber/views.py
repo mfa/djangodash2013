@@ -7,7 +7,7 @@ from .mixins import LoginRequiredMixin
 from .models import JabberRoster
 
 
-class JabberRoosterView(LoginRequiredMixin, ListView):
+class JabberRosterView(LoginRequiredMixin, ListView):
     model = JabberRoster
 
     def get_queryset(self):
