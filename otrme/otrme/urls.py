@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 
 from events.views import PGEventsView
 
-from .views import MainView
+from .views import MainView, logout
 from jabber.views import JabberRosterView, JabberSendMessageView, JabberSetFocusView
 
 # Uncomment the next two lines to enable the admin:
@@ -35,7 +35,7 @@ urlpatterns = patterns('',
     url(r'^login/$',
         'django.contrib.auth.views.login', name='login'),
     url(r'^logout/$',
-        'django.contrib.auth.views.logout',
+        logout,
         {'next_page': '/'},
         name='logout'),
 )

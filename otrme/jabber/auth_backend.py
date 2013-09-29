@@ -40,6 +40,14 @@ class JabberAuthBackend(object):
             if client.authenticated:
                 # Yes authenticated!
 
+                # create user
+                try:
+                    user = User.objects.get(username=username)
+                except User.DoesNotExist:
+                    user = User(username=username,
+                                password='WeDontSavePasswords!')
+                    user.save()
+
                 # and login on backgroud daemon
                 event_payload = {
                     'type': 'connect',
@@ -51,13 +59,6 @@ class JabberAuthBackend(object):
                     event_payload
                 )
 
-                # create user
-                try:
-                    user = User.objects.get(username=username)
-                except User.DoesNotExist:
-                    user = User(username=username,
-                                password='WeDontSavePasswords!')
-                    user.save()
                 return user
             else:
                 # Auth at jabber server failed
