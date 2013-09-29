@@ -41,7 +41,7 @@ angular.module('controllers',[])
       $scope.send_message = function(channel, msgtext) {
 	  var message = {};
 	  var d = new Date();
-	  message['time'] = d.toString();
+	  message['time'] = d.toISOString();
 	  message['message'] = msgtext;
 	  message['jid'] = $scope.own_jid;
 	  OtrmeApi.send_message(channel, message, function(data) {
@@ -111,6 +111,7 @@ angular.module('controllers',[])
       es.addEventListener('message', handleMessage, false);
 
       var handleRoster = function() {
+	  alert("Roster update triggered");
 	  $scope.$apply(function () {
 	      OtrmeApi.get_roster(function(data){
 		  $scope.users = data;
@@ -123,14 +124,15 @@ angular.module('controllers',[])
       es.addEventListener('roster_updated', handleRoster, false);
 
       var handleStatus = function(data) {
-	  $scope.apply(function () {
+	  $scope.$apply(function () {
 	      obj = JSON.parse(data.data);
-	      if (!$scope.get_user(data.jid)) {
-		  $scope.users.push(data);
+	      alert("Handle status: " + data.data);
+	      if (!$scope.get_user(obj.jid)) {
+		  $scope.users.push(obj);
 	      } else {
-		  var user = $scope.get_user(data.jid);
-		  user.show = data.show;
-		  user.status = data.status;
+		  var user = $scope.get_user(obj.jid);
+		  user.show = obj.show;
+		  user.status = obj.status;
 	      };
 	  });
       };
