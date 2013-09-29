@@ -109,6 +109,32 @@ angular.module('controllers',[])
       };
       es.addEventListener('message', handleMessage, false);
 
+      var handleRoster = function() {
+	  $scope.$apply(function () {
+	      OtrmeApi.get_roster(function(data){
+		  $scope.users = data;
+		  if (!$scope.current_channel_name) {
+		      $scope.set_current_channel($scope.users[1].jid);
+		  };
+	      });
+	  });
+      };
+      es.addEventListener('roster_updated', handleRoster, false);
+
+      var handleStatus = function(data) {
+	  $scope.apply(function () {
+	      obj = JSON.parse(data.data);
+	      if (!$scope.get_user(data.jid)) {
+		  $scope.users.push(data);
+	      } else {
+		  var user = $scope.get_user(data.jid);
+		  user.show = data.show;
+		  user.status = data.status;
+	      };
+	  });
+      };
+      es.addEventListener('status_changed', handleStatus, false);
+
       /************************************************************************
        * Init and default values
        */
