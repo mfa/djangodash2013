@@ -24,6 +24,10 @@ angular.module('services', [])
 	    });
 	};
 
+	d['set_focus'] = function(channel) {
+	    $http.get('/focus/' + channel)
+	};
+
 	d['send_message'] = function(channel, msg, callback) {
 	    msg = $.param(msg);
 	    $http.post('/message/' + channel, msg).success(function(data) {

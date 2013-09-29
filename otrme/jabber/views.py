@@ -56,3 +56,11 @@ class JabberSendMessageView(LoginRequiredMixin, View):
         )
 
         return HttpResponse(json.dumps({'success': True}))
+
+class JabberSetFocusView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        print args
+        # Jarus
+        # something with jab-control and kwargs,get(who) I guess
+        return HttpResponse("")
