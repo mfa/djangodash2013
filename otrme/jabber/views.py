@@ -34,10 +34,20 @@ class JabberSendMessageView(LoginRequiredMixin, View):
         if not self.kwargs.get('to'):
             raise Http404
 
+        to_jid = self.request.user.roster_items.filter(
+            jid=self.kwargs.get('to')
+        )[:1]
+
+        if not to_jid:
+            raise Exception("JID not in roster!")
+
+        presence = to_jid[0].presences.all().order_by('-resource')[0]
+        to_jid_str = "%s/%s" % (to_jid[0].jid, presence.resource)
+
         event_payload = {
             'type': 'message',
             'jid': self.request.POST.get('jid'),
-            'to_jid': self.kwargs.get('to'),
+            'to_jid': to_jid_str,
             'message': self.request.POST.get('message'),
         }
         pg_notify(

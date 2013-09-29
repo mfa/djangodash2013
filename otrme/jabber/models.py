@@ -20,5 +20,11 @@ class JabberRoster(models.Model):
     account = models.ForeignKey(User, related_name='roster_items')
     jid = models.CharField(max_length=300)
 
+class JabberPresence(models.Model):
+    jid = models.ForeignKey(JabberRoster, related_name='presences')
+
+    resource = models.CharField(max_length=300)
+    priority = models.IntegerField(default=0)
+
     show = models.CharField(max_length=300, default='unavailable')
     status = models.CharField(max_length=300, default='')

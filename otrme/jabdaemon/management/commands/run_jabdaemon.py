@@ -75,6 +75,8 @@ class Command(BaseCommand):
                 self.logger.debug("JID %s is not connected", jid)
                 return
 
+            print event['to_jid']
+
             print self.clients[jid].otr.contexts
             self.clients[jid].otr.outgoing(event['to_jid'], event['message'])
 
