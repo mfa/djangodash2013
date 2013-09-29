@@ -68,43 +68,18 @@ class OTRMeClient(ClientXMPP):
         })
 
         context = self.otr.context_to(unicode(msg['from']))
-
         if msg['type'] in ('chat', 'normal'):
             event_payload = {
                 'name': 'Gentle',
                 'jid': unicode(msg['from']),
-                'message': unicode(msg['body']),
-                'time': '2013-09-09 18:24'
+                'message': plain_msg,
+                'time': '2013-09-09 18:24',
+                'otr_state': context.state
             }
             pg_notify(
                 'events/%s' % unicode(msg['from'].bare),
                 json.dumps(["message", event_payload])
             )
-
-            if context.state == 0:
-                self.otr.outgoing(
-                    msg['from'],
-                    "Your message was not encrypted. AARRRR!"
-                )
-            elif context.state == 1:
-                self.otr.outgoing(
-                    msg['from'],
-                    "Your message was encrypted. Great secret plan!"
-                )
-            elif context.state == 2:
-                self.otr.outgoing(
-                    msg['from'],
-                    "Okay no OTR anymore. Silence now!"
-                )
-            else:
-                self.otr.outgoing(
-                    msg['from'],
-                    "Something went terrible wrong..."
-                )
-
-        print msg
-        print was_encrypted
-        print plain_msg
 
     def changed_status(self, presence):
         print presence['from']
