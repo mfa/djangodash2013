@@ -113,6 +113,7 @@ angular.module('controllers',[])
       var handleRoster = function() {
 	  $scope.$apply(function () {
 	      OtrmeApi.get_roster(function(data){
+		  // this throws away unread counts! :(
 		  $scope.users = data;
 		  if (!$scope.current_channel_name) {
 		      $scope.set_current_channel($scope.users[1].jid);
