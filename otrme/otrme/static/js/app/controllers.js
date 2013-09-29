@@ -20,11 +20,6 @@ function pretty_hash(object) {
 angular.module('controllers',[])
   .controller('ChatCtrl', ['$scope', 'OtrmeApi', function($scope, OtrmeApi){
 
-      OtrmeApi.get_roster(function(data){
-	  $scope.users = data;
-	  $scope.set_current_channel($scope.users[1].jid);
-      });
-
       $scope.pretty_unread = function(unread) {
 	  if (parseInt(unread) > 0) {
 	      return "("+unread+")";
@@ -48,8 +43,11 @@ angular.module('controllers',[])
 	  var d = new Date();
 	  message['time'] = d.toString();
 	  message['message'] = msgtext;
-	  message['user'] = 'Gentle';
-	  $scope.add_message(channel, message);
+	  message['jid'] = $scope.own_jid;
+	  message['to_jid'] = channel;
+	  OtrmeApi.send_message(channel, message, function(data) {
+	      $scope.add_message(channel, message);
+	  });
       };
 
       $scope.add_message = function(channel, msg) {
@@ -107,7 +105,6 @@ angular.module('controllers',[])
 	      if (obj.message !== null) {
 		  $scope.add_message(obj.jid, obj);
 	      };
-	      // I  have no messages to test with yet :P
 	  });
       };
       es.addEventListener('message', handleMessage, false);
@@ -115,6 +112,11 @@ angular.module('controllers',[])
       /************************************************************************
        * Init and default values
        */
+      OtrmeApi.get_roster(function(data){
+	  $scope.users = data;
+	  $scope.set_current_channel($scope.users[1].jid);
+      });
+
       $scope.messages = {};
       $scope.users = [];
       $scope.current_channel_name = '';
