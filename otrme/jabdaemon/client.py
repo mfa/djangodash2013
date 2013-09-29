@@ -70,7 +70,7 @@ class OTRMeClient(ClientXMPP):
                 'otr_state': context.state
             }
             pg_notify(
-                'events/%s' % unicode(msg['from'].bare),
+                'events/%s' % unicode(self.boundjid.bare),
                 ["message", json.dumps(event_payload)]
             )
 
