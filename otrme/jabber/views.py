@@ -24,7 +24,7 @@ class JabberRosterView(LoginRequiredMixin, ListView):
             if presence:
                 p_show = presence.show
                 p_status = presence.status
-                
+
             data.append({
                 'jid': roster_item.jid,
                 'show': p_show,
@@ -64,6 +64,7 @@ class JabberSendMessageView(LoginRequiredMixin, View):
         )
 
         return HttpResponse(json.dumps({'success': True}))
+
 
 class JabberSetFocusView(LoginRequiredMixin, View):
 

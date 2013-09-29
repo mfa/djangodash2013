@@ -5,6 +5,7 @@ from events.pgnotify import pg_notify
 from sleekxmpp import ClientXMPP
 import logging
 
+
 class JabberAuthCheckClient(ClientXMPP):
 
     def __init__(self, jid, password):
