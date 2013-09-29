@@ -1,6 +1,7 @@
 angular.module('services', [])
-    .factory('OtrmeApi', ['$http', function($http) {
+    .factory('OtrmeApi', ['$http', '$cookies', function($http, $cookies) {
 	var d = {};
+	$http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
 	d['get_roster'] = function(callback) {
 		$http.get('/roster/').success(function(data) {
 		    // data should be a list of user info objects
@@ -29,6 +30,9 @@ angular.module('services', [])
 		 * Jarus: you should choose which fields this call needs
 		 */
 		callback(data);
+	    })
+	    .error(function(data) {
+		alert(data);
 	    });
 	};
 	return d;
