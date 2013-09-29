@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from events.views import PGEventsView
 
 from .views import MainView
+from jabber.views import JabberRoosterView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -21,7 +22,10 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^events/?$',
+    url(r'^rooster/$',
+        JabberRoosterView.as_view(), name='rooster'),
+
+    url(r'^events/$',
         PGEventsView.as_view(), name='events'),
     url(r'^login/$',
         'django.contrib.auth.views.login', name='login'),
