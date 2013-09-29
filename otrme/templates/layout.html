@@ -11,6 +11,7 @@
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/otrme.css' %}" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
     <link rel="shortcut icon" href="{% static 'assets/favicon.png' %}">
 
@@ -22,7 +23,7 @@
     <a class="sr-only" href="#content">Skip navigation</a>
 
     <!-- Docs master nav -->
-    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav navbar-custom" role="banner">
   <div class="container">
     <div class="navbar-header">
       <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
@@ -57,84 +58,124 @@
 
     <!-- Page content of course! -->
     <main class="bs-masthead" id="content" role="main">
-      <div class="container" ng-app="OtrMe" ng-controller="ChatCtrl">
-	{% block content %}
-	{% if user.is_authenticated %}
-	{% verbatim %}
-	<h1>Chat with <b>{{ current_user_name }}</b></h1>
-	<div class="row">
-	  <div class="col-md-9">
-	    <div class="row" ng-repeat="message in messages[current_user_name] | orderBy:'time'">
-	      <div class="col-md-8">
-		<div class="row">
-		  <div class="col-md-8">
-		    <h4><strong><a href="#">{{ message.user }}</a></strong></h4>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="col-md-2">
-		    <div class="thumbnail">
-		      <img src="http://placehold.it/300x300" alt="">
-		    </div>
-		  </div>
-		  <div class="col-md-6">
-		    <p>
-		      {{ message.message }}
-		    </p>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="col-md-8">
-		    <p>
-		      <span class="glyphicon glyphicon-time"></span> {{ message.time }}
-		    </p>
-		  </div>
-		</div>
-	      </div>
-	    </div>
 
-	    <div class="row">
-	      <div class="col-md-8 well">
-		<form accept-charset="UTF-8" ng-submit="send_message(current_user_name, new_message_text)">
-		  <div class="row">
-		    <textarea class="col-md-8" id="new_message" name="new_message"
-			      placeholder="Type in your message" rows="5" ng-model="new_message_text"></textarea>
-		  </div>
-		  <div class="row">
-		    <button class="btn btn-info" type="submit">Post New Message</button>
-		  </div>
-		</form>
-	      </div>
-	    </div>
-	  </div>
-	  <div class="col-md-3">
-	    <h3>Online Users</h3>
-	    <ul>
-	      <li ng-repeat="user in users | orderBy:'name' | filter:{status:'Online'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ pretty_unread(user.unread) }}</b></li>
-	    </ul>
-	    <h3>Away Users</h3>
-	    <ul>
-	      <li ng-repeat="user in users | orderBy:'name' | filter:{status:'Away'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ pretty_unread(user.unread) }}</b></li>
-	    </ul>
-	  </div>
-	  {% endverbatim %}
-	  {% endif %}
-	  {% endblock %}
-	</div>
+	{% block content %}
+
+	{% if not user.is_authenticated %}
+	<div style="background-color: #8c8">
+	  <div class="container">
+            <div class="row" >
+              <div class="col-xs-4" style="text-align: center">
+		<h1><img src="/static/icons/XMPP_logo.svg" /></h1>
+		<h4>Jabber Webfrontend</h4>
+		<p>
+		  Jabber/XMPP with any server via web interface.
+		</p>
+              </div>
+              <div class="col-xs-4" style="text-align: center">
+		<h1><i class="icon-lock icon-4x"></i></h1>
+		<h4>Secured by Off-the-Record Messaging</h4>
+		<p>
+		  <strong>?OTRv2?</strong>We support Off-the-Record private conversations.<br/>See <a href="http://otr.cypherpunks.ca/">http://otr.cypherpunks.ca/</a> for more information.
+		</p>
+              </div>
+              <div class="col-xs-4" style="text-align: center">
+		<h1><i class="icon-github icon-4x"></i></h1>
+		<h4>Open source and built in 48h.</h4>
+		otrme.de is a <a href="http://djangodash.com/teams/c4/three-followers/">DjangoDash 2013</a> project. Get the <a href="https://github.com/mfa/djangodash2013">sourcecode</a> on github.
+		<p>
+		</p>
+              </div>
+            </div>
+          </div>
+        </div>
+	{% endif %}
+
+	<div style="background-color: #dfd">
+	  <div class="container">
+	    
+	    <div ng-app="OtrMe" ng-controller="ChatCtrl" style="padding-top:20px;">
+	     {% if user.is_authenticated %}
+	     {% verbatim %}
+	     <h1>Chat with <b>{{ current_user_name }}</b></h1>
+	     <div class="row">
+	       <div class="col-md-9">
+		 <div class="row" ng-repeat="message in messages[current_user_name] | orderBy:'time'">
+		   <div class="col-md-8">
+		     <div class="row">
+		       <div class="col-md-8">
+			 <h4><strong><a href="#">{{ message.user }}</a></strong></h4>
+		       </div>
+		     </div>
+		     <div class="row">
+		       <div class="col-md-2">
+			 <div class="thumbnail">
+			   <img src="http://placehold.it/300x300" alt="">
+			 </div>
+		       </div>
+		       <div class="col-md-6">
+			 <p>
+			   {{ message.message }}
+			 </p>
+		       </div>
+		     </div>
+		     <div class="row">
+		       <div class="col-md-8">
+			 <p>
+			   <span class="glyphicon glyphicon-time"></span> {{ message.time }}
+			 </p>
+		       </div>
+		     </div>
+		   </div>
+		 </div>
+		 
+		 <div class="row">
+		   <div class="col-md-8 well">
+		     <form accept-charset="UTF-8" ng-submit="send_message(current_user_name, new_message_text)">
+		       <div class="row">
+			 <textarea class="col-md-8" id="new_message" name="new_message"
+				   placeholder="Type in your message" rows="5" ng-model="new_message_text"></textarea>
+		       </div>
+		       <div class="row">
+			 <button class="btn btn-info" type="submit">Post New Message</button>
+		       </div>
+		     </form>
+		   </div>
+		 </div>
+	       </div>
+	       <div class="col-md-3">
+		 <h3>Online Users</h3>
+		 <ul>
+		   <li ng-repeat="user in users | orderBy:'name' | filter:{status:'Online'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ pretty_unread(user.unread) }}</b></li>
+		 </ul>
+		 <h3>Away Users</h3>
+		 <ul>
+		   <li ng-repeat="user in users | orderBy:'name' | filter:{status:'Away'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ pretty_unread(user.unread) }}</b></li>
+		 </ul>
+	       </div>
+	       {% endverbatim %}
+	       {% endif %}
+	     </div>
+	     {% endblock %}
+            </div>
+          </div>
       </div>
+	<div id="push"></div>
     </main>
 
 
-    <footer class="container" role="contentinfo">
-      <div class="bs-social">
-	<ul class="bs-social-buttons">
-	  <li>
-	    <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=mfa&amp;repo=djangodash2013&amp;type=watch&amp;count=true" width="100" height="20" title="Star on GitHub"></iframe>
-	  </li>
+    <footer role="contentinfo">
+      <div class="container">
+	<div class="bs-social">
+	  <ul class="bs-social-buttons">
+	    <li>
+	      <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=mfa&amp;repo=djangodash2013&amp;type=watch&amp;count=true" width="100" height="20" title="Star on GitHub"></iframe>
+	    </li>
 	  <li>
 	    <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=mfa&amp;repo=djangodash2013&amp;type=fork&amp;count=true" width="102" height="20" title="Fork on GitHub"></iframe>
 	  </li>
 	</ul>
+	</div>
       </div>
     </footer>
 
