@@ -46,6 +46,7 @@ angular.module('controllers',[])
 	  message['jid'] = $scope.own_jid;
 	  OtrmeApi.send_message(channel, message, function(data) {
 	      $scope.add_message(channel, message);
+	      $scope.new_message_text = '';
 	  });
       };
 
