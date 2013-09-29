@@ -23,6 +23,9 @@ class XMPPOTRContext(OTRContext):
                                   self.user, self.peer, msg)
         self.xmpp_client.send_message(mto=self.peer, mbody=msg)
 
+    def start_otr(self):
+        inv_msg = self.sendMessage(self.getPolicy('ALLOW_V2'), '')
+        self.inject(inv_msg)
 
 class XMPPOTRContextManager(OTRContextManager):
 
