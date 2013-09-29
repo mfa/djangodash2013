@@ -49,8 +49,12 @@ class JabberSendMessageView(LoginRequiredMixin, View):
         if not to_jid:
             raise Exception("JID not in roster!")
 
-        presence = to_jid[0].presences.all().order_by('-resource')[0]
-        to_jid_str = "%s/%s" % (to_jid[0].jid, presence.resource)
+        presence = to_jid[0].presences.all().order_by('-resource')
+        if presence:
+            presence = presence[0]
+            to_jid_str = "%s/%s" % (to_jid[0].jid, presence.resource)
+        else:
+            to_jid_str = "%s" % to_jid[0].jid
 
         event_payload = {
             'type': 'message',
