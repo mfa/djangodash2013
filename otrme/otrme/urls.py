@@ -5,7 +5,9 @@ from django.conf.urls.static import static
 from events.views import PGEventsView
 
 from .views import MainView, logout
-from jabber.views import JabberRosterView, JabberSendMessageView, JabberSetFocusView
+from jabber.views import (JabberRosterView,
+                          JabberSendMessageView,
+                          JabberSetFocusView)
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -41,4 +43,5 @@ urlpatterns = patterns('',
 )
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)
