@@ -20,6 +20,7 @@ class JabberRoster(models.Model):
     account = models.ForeignKey(User, related_name='roster_items')
     jid = models.CharField(max_length=300)
 
+
 class JabberPresence(models.Model):
     jid = models.ForeignKey(JabberRoster, related_name='presences')
 

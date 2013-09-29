@@ -69,7 +69,7 @@ class Command(BaseCommand):
                 self.logger.error("to_jid missing in event")
                 return
             if 'message' not in event:
-                self.logger.error("messae missing in event")
+                self.logger.error("message missing in event")
                 return
             if jid not in self.clients:
                 self.logger.debug("JID %s is not connected", jid)
