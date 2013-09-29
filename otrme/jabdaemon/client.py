@@ -123,16 +123,19 @@ class OTRMeClient(ClientXMPP):
 
         # Check was the presence update of the highest resource for this
         # roster item than notify frontend about status change
-        highest_resource = roster_item.presences.all() \
-                                      .order_by('-resource')[0]
+        highest_resource = roster_item.highest_resource
+
+        print highest_resource.pk
+        print _presence.pk
+
         if highest_resource.pk == _presence.pk:
             pg_notify(
                 'events/%s' % unicode(self.boundjid.bare),
-                ["status_changed", {
+                ["status_changed", json.dumps({
                     'jid': presence['from'].bare,
                     'show': show,
                     'status': presence['status']
-                }]
+                })]
             )
 
         print "-" * 80
@@ -152,5 +155,5 @@ class OTRMeClient(ClientXMPP):
 
         pg_notify(
             'events/%s' % unicode(self.boundjid.bare),
-            ["roster_updated", None]
+            ["roster_updated", "{}"]
         )

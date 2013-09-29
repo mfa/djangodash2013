@@ -63,6 +63,8 @@ class Command(BaseCommand):
 
             self.logger.debug("Close client for %s", jid)
             self.clients[jid].disconnect()
+            del self.clients[jid]
+
         elif event.get('type') == 'message':
             jid = event['jid']
             if 'to_jid' not in event:
