@@ -2,6 +2,7 @@ angular.module('services', [])
     .factory('OtrmeApi', ['$http', '$cookies', function($http, $cookies) {
 	var d = {};
 	$http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+	$http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 	d['get_roster'] = function(callback) {
 		$http.get('/roster/').success(function(data) {
 		    // data should be a list of user info objects
