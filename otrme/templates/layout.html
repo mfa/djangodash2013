@@ -94,17 +94,20 @@
 	<div style="background-color: #dfd">
 	  <div class="container">
 	    
+	    {% if user.is_authenticated %}
 	    <div ng-app="OtrMe" ng-controller="ChatCtrl" style="padding-top:20px;">
-	     {% if user.is_authenticated %}
+	      <script type="text/javascript">
+		var logged_in_jid = '{{ user.username }}';
+	      </script>
 	     {% verbatim %}
-	     <h1>Chat with <b>{{ current_user_name }}</b></h1>
+	     <h1>Chat with <b>{{ current_channel_name }}</b></h1>
 	     <div class="row">
 	       <div class="col-md-9">
-		 <div class="row" ng-repeat="message in messages[current_user_name] | orderBy:'time'">
+		 <div class="row" ng-repeat="message in messages[current_channel_name] | orderBy:'time'">
 		   <div class="col-md-8">
 		     <div class="row">
 		       <div class="col-md-8">
-			 <h4><strong><a href="#">{{ message.user }}</a></strong></h4>
+			 <h4><strong><a href="#">{{ message.jid }}</a></strong></h4>
 		       </div>
 		     </div>
 		     <div class="row">
@@ -122,7 +125,7 @@
 		     <div class="row">
 		       <div class="col-md-8">
 			 <p>
-			   <span class="glyphicon glyphicon-time"></span> {{ message.time }}
+			   <span class="glyphicon glyphicon-time"></span> {{ message.time }} | <span ng-bind-html-unsafe="pretty_otr(message.otr_state)"></span>sent from {{  message.resource }}
 			 </p>
 		       </div>
 		     </div>
@@ -131,7 +134,7 @@
 		 
 		 <div class="row">
 		   <div class="col-md-8 well">
-		     <form accept-charset="UTF-8" ng-submit="send_message(current_user_name, new_message_text)">
+		     <form accept-charset="UTF-8" ng-submit="send_message(current_channel_name, new_message_text)">
 		       <div class="row">
 			 <textarea class="col-md-8" id="new_message" name="new_message"
 				   placeholder="Type in your message" rows="5" ng-model="new_message_text"></textarea>
@@ -146,16 +149,16 @@
 	       <div class="col-md-3">
 		 <h3>Online Users</h3>
 		 <ul>
-		   <li ng-repeat="user in users | orderBy:'name' | filter:{status:'Online'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ pretty_unread(user.unread) }}</b></li>
+		   <li ng-repeat="user in users | orderBy:'jid' | filter:{show:'available'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_channel(user.jid)">{{ user.jid }}</a> <b>{{ pretty_unread(user.unread) }}</b></li>
 		 </ul>
-		 <h3>Away Users</h3>
+		 <h3>All Users</h3>
 		 <ul>
-		   <li ng-repeat="user in users | orderBy:'name' | filter:{status:'Away'}"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_user(user.name)">{{ user.name }}</a> <b>{{ pretty_unread(user.unread) }}</b></li>
+		   <li ng-repeat="user in users | orderBy:'jid'"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_channel(user.jid)">{{ user.jid }}</a> <b>{{ pretty_unread(user.unread) }} [{{ user.show }}]</b></li>
 		 </ul>
 	       </div>
 	       {% endverbatim %}
-	       {% endif %}
 	     </div>
+	     {% endif %}
 	     {% endblock %}
             </div>
           </div>

@@ -22,8 +22,8 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^rooster/$',
-        JabberRosterView.as_view(), name='rooster'),
+    url(r'^roster/$',
+        JabberRosterView.as_view(), name='roster'),
 
     url(r'^events/$',
         PGEventsView.as_view(), name='events'),

@@ -69,9 +69,15 @@ class OTRMeClient(ClientXMPP):
 
         context = self.otr.context_to(unicode(msg['from']))
         if msg['type'] in ('chat', 'normal'):
+            data = unicode(msg['from']).split('/')
+            jid = data[0]
+            resource = ''
+            if len(data) > 1:
+                resource = data[1]
             event_payload = {
                 'name': 'Gentle',
-                'jid': unicode(msg['from']),
+                'jid': jid,
+                'resource': resource,
                 'message': plain_msg[0],
                 'time': '2013-09-09 18:24',
                 'otr_state': context.state

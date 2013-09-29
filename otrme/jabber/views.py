@@ -14,9 +14,10 @@ class JabberRosterView(LoginRequiredMixin, ListView):
         return self.model.objects.filter(account=self.request.user)
 
     def get(self, request, *args, **kwargs):
-        data = {}
+        data = []
         for element in self.get_queryset():
-            data[element.jid] = {}
+            e = {}
             for key in ('jid', 'show', 'status'):
-                data[element.jid][key] = element.__dict__.get(key)
+                e[key] = element.__dict__.get(key)
+            data.append(e)
         return HttpResponse(json.dumps(data))

@@ -1,33 +1,28 @@
+// this helps when debugging, does more or less what python's dir does
+function dir(object) {
+    stuff = [];
+    for (s in object) {
+	stuff.push(s);
+    }
+    stuff.sort();
+    return stuff;
+};
+
+function pretty_hash(object) {
+    result = '{';
+    for (key in object) {
+	result = result + key + ':"' + object[key] + '", ';
+    };
+    result = result + '}';
+    return result
+};
+
 angular.module('controllers',[])
   .controller('ChatCtrl', ['$scope', 'OtrmeApi', function($scope, OtrmeApi){
-      /************************************************************************
-       * mockup data
-       */
-      $scope.messages = {Jarus: [{user: 'Jarus',
-				  jid: 'otr@jabme.de',
-				  message: 'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
-				  time: 'Sept 26th, 2013 8:18 PM CET'},
-				 {user: 'Gentle',
-				  message: 'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
-				  time: 'Sept 26th, 2013 8:16 PM CET'}],
-			 Gentle: [{user: 'Jarus',
-				   message: "blub",
-				   time: "Sept 27th, 2013 12:40 AM CET"}]
-			};
-      $scope.users = [{name: 'Jarus',
-		       jid: 'otr@jabme.de',
-		       status: "Online",
-		       unread: 0},
-		      {name: 'Gentle',
-		       jid: 'dastier@schokokeks.org',
-		       status: "Away",
-		       unread: 1}
-		     ];
-
-      /***********************************************************************/
 
       OtrmeApi.get_roster(function(data){
 	  $scope.users = data;
+	  $scope.set_current_channel($scope.users[1].jid);
       });
 
       $scope.pretty_unread = function(unread) {
@@ -35,6 +30,14 @@ angular.module('controllers',[])
 	      return "("+unread+")";
 	  };
 	  return "";
+      };
+
+      $scope.pretty_otr = function(status) {
+	  result = ""
+	  if (status) {
+	      result = '<i class="glyphicon glyphicon-lock"></i> OTR enabled | '
+	  };
+	  return result;
       };
 
       /************************************************************************
@@ -54,27 +57,40 @@ angular.module('controllers',[])
 	      $scope.messages[channel] = [];
 	  };
 	  $scope.messages[channel].push(msg)
+	  // notification of any kind here?
+	  if (channel != $scope.current_channel_name) {
+	      var user = $scope.get_user(channel);
+	      if (!user.unread) {
+		  user.unread = 0
+	      };
+	      user.unread = user.unread + 1;
+	  };
       };
 
       /***********************************************************************/
 
-      $scope.current_user = function() {
+      $scope.get_user = function(jid) {
 	  for (id in $scope.users) {
-	      if ($scope.users[id].name == $scope.current_user_name) {
+	      if ($scope.users[id].jid == jid) {
 		  return $scope.users[id];
 	      };
 	  };
 	  return null;
       };
-      $scope.set_current_user = function(user) {
-	  var old_user = $scope.current_user_name;
-	  $scope.cached_input[old_user] = $scope.new_message_text;
-	  if ($scope.cached_input[user]) {
-	      $scope.new_message_text = $scope.cached_input[user];
+
+      $scope.current_user = function() {
+	  return $scope.get_user($scope.current_channel_name);
+      };
+
+      $scope.set_current_channel = function(channel) {
+	  var old_channel = $scope.current_channel_name;
+	  $scope.cached_input[old_channel] = $scope.new_message_text;
+	  if ($scope.cached_input[channel]) {
+	      $scope.new_message_text = $scope.cached_input[channel];
 	  } else {
 	      $scope.new_message_text = "";
 	  };
-	  $scope.current_user_name = user;
+	  $scope.current_channel_name = channel;
 	  $scope.current_user().unread = 0;
       };
 
@@ -87,6 +103,10 @@ angular.module('controllers',[])
 	  // apply is needed since this function gets called asynchronously
 	  // but needs to update angular's scope (thread) context
 	  $scope.$apply(function () {
+	      obj = JSON.parse(msg.data);
+	      if (obj.message !== null) {
+		  $scope.add_message(obj.jid, obj);
+	      };
 	      // I  have no messages to test with yet :P
 	  });
       };
@@ -95,7 +115,10 @@ angular.module('controllers',[])
       /************************************************************************
        * Init and default values
        */
-      $scope.current_user_name = 'Jarus';
+      $scope.messages = {};
+      $scope.users = [];
+      $scope.current_channel_name = '';
       $scope.new_message_text = '';
+      $scope.own_jid = logged_in_jid;
       $scope.cached_input = {};
   }]);
