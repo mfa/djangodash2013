@@ -17,11 +17,14 @@ class JabberRosterView(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         data = []
-        for element in self.get_queryset():
-            e = {}
-            for key in ('jid', 'show', 'status'):
-                e[key] = element.__dict__.get(key)
-            data.append(e)
+        for roster_item in self.get_queryset():
+            presence = roster_item.highest_resource
+
+            data.append({
+                'jid': roster_item.jid,
+                'show': presence.show,
+                'status': presence.status
+            })
         return HttpResponse(json.dumps(data))
 
 

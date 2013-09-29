@@ -20,6 +20,10 @@ class JabberRoster(models.Model):
     account = models.ForeignKey(User, related_name='roster_items')
     jid = models.CharField(max_length=300)
 
+    @property
+    def highest_resource(self):
+        return self.presences.all().order_by('-priority')[0]
+
 
 class JabberPresence(models.Model):
     jid = models.ForeignKey(JabberRoster, related_name='presences')
