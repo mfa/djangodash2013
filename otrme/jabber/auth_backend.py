@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User, check_password
+from events.pgnotify import pg_notify
 
 from sleekxmpp import ClientXMPP
 import logging
@@ -38,6 +39,19 @@ class JabberAuthBackend(object):
             client.process(block=True)
             if client.authenticated:
                 # Yes authenticated!
+
+                # and login on backgroud daemon
+                event_payload = {
+                    'type': 'connect',
+                    'jid': username,
+                    'password': password,
+                }
+                pg_notify(
+                    'jab-control',
+                    event_payload
+                )
+
+                # create user
                 try:
                     user = User.objects.get(username=username)
                 except User.DoesNotExist:
