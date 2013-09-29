@@ -17,7 +17,7 @@ Technology
  * sleekxmpp (for jabber)
  * pure-python-otr (for otr)
  * PostgreSQL (Database and push (sse, NOTIFY))
- * gevent (parallize all things)
+ * gevent (parallelize all things)
  * Bootstrap
  * Angular.js (Frontend stuff)
 
@@ -35,7 +35,7 @@ Installation and usage
 
   pip install -r requirements.txt
 
-  # change local.py
+  # change otrme/settings/local.py
   # syncdb
   
   # for jabber daemon
