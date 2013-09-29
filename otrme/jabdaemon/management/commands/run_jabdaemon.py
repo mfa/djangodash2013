@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand
 from jabdaemon.client import OTRMeClient
 from events.pgnotify import pg_listen
 
+
 class Command(BaseCommand):
     args = ''
     help = 'Start the JabDaemon'
@@ -48,7 +49,7 @@ class Command(BaseCommand):
                 self.logger.debug("JID %s is already connected", jid)
                 return
 
-            self.logger.debug("Create client for %s")
+            self.logger.debug("Create client for %s", jid)
             self.clients[jid] = OTRMeClient(jid, password)
             self.clients[jid].connect()
             self.clients[jid].process(block=False)
@@ -60,7 +61,22 @@ class Command(BaseCommand):
                 self.logger.debug("JID %s wasn't connected", jid)
                 return
 
-            self.logger.debug("Close client for %s")
+            self.logger.debug("Close client for %s", jid)
             self.clients[jid].disconnect()
+        elif event.get('type') == 'message':
+            jid = event['jid']
+            if 'to_jid' not in event:
+                self.logger.error("to_jid missing in event")
+                return
+            if 'message' not in event:
+                self.logger.error("messae missing in event")
+                return
+            if jid not in self.clients:
+                self.logger.debug("JID %s is not connected", jid)
+                return
+            conversation_context = self.clients[jid].otr.context_to(event['to_jid'])
+            conversation_context.inject(event['message'])
+            self.logger.debug("Sent message from %s to %s",
+                              event['to_jid'], event['jid'])
         else:
             self.logger.error("Unknown event: %s", event)

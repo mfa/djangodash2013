@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from events.views import PGEventsView
 
 from .views import MainView
-from jabber.views import JabberRosterView
+from jabber.views import JabberRosterView, JabberSendMessageView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -24,6 +24,8 @@ urlpatterns = patterns('',
 
     url(r'^roster/$',
         JabberRosterView.as_view(), name='roster'),
+    url(r'^message/(?P<to>[\w\@\.\-\_]+)/?$',
+        JabberSendMessageView.as_view(), name='send'),
 
     url(r'^events/$',
         PGEventsView.as_view(), name='events'),

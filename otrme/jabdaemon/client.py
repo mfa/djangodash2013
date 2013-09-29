@@ -89,8 +89,8 @@ class OTRMeClient(ClientXMPP):
             )
 
     def changed_status(self, presence):
-        print "-" * 80
-        print presence
+#        print "-" * 80
+#        print presence
 
         if presence['show'] == '':
             show = 'available'
@@ -103,7 +103,7 @@ class OTRMeClient(ClientXMPP):
             show=show,
             status=presence['status']
         )
-        print "-" * 80
+#        print "-" * 80
 
     def roster_update(self, event):
         roster = self.client_roster
