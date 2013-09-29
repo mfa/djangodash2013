@@ -63,3 +63,4 @@ class JabberSetFocusView(LoginRequiredMixin, View):
         print args
         # Jarus
         # something with jab-control and kwargs,get(who) I guess
+        return HttpResponse("")
