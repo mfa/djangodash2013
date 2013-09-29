@@ -8,7 +8,7 @@ from otrbackend.magic import OTRContextManager, OTRContext
 from django.utils.timezone import now
 
 from django.contrib.auth.models import User
-from jabber.models import JabberRoster
+from jabber.models import JabberRoster, JabberPresence
 
 
 class XMPPOTRContext(OTRContext):
@@ -89,21 +89,30 @@ class OTRMeClient(ClientXMPP):
             )
 
     def changed_status(self, presence):
-#        print "-" * 80
-#        print presence
+        print "-" * 80
+        print presence
 
         if presence['show'] == '':
             show = 'available'
         else:
             show = presence['show']
 
-        self.django_user.roster_items.filter(
-            jid=presence['from'].bare,
-        ).update(
-            show=show,
-            status=presence['status']
+        print presence['priority']
+        print presence['from'].resource
+
+        _presence, created = JabberPresence.objects.get_or_create(
+            jid=self.django_user.roster_items.get_or_create(
+                jid=presence['from'].bare,
+            )[0],
+            resource=presence['from'].resource,
+            priority=presence['priority']
         )
-#        print "-" * 80
+
+        _presence.show = show
+        _presence.status = presence['status']
+        _presence.save()
+
+        print "-" * 80
 
     def roster_update(self, event):
         roster = self.client_roster
