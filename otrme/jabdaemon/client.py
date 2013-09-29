@@ -78,12 +78,15 @@ class OTRMeClient(ClientXMPP):
             else:
                 message_text = plain_msg
 
+            if message_text is None:
+                return
+
             event_payload = {
                 'name': msg['from'].bare,   # for now, until we know how to get the name
                 'jid': msg['from'].bare,
                 'resource': msg['from'].resource,
                 'message': strip_tags(message_text),
-                'time': str(now()),   # maybe add some conversion to local tz
+                'time':  now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 'otr_state': context.state
             }
             pg_notify(
