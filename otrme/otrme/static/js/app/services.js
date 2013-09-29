@@ -25,6 +25,7 @@ angular.module('services', [])
 	};
 
 	d['send_message'] = function(channel, msg, callback) {
+	    msg = $.param(msg);
 	    $http.post('/message/' + channel, msg).success(function(data) {
 		/* msg will be a dict, on django's side this works like
 		 * any other form
