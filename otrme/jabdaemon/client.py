@@ -27,6 +27,7 @@ class XMPPOTRContext(OTRContext):
         inv_msg = self.sendMessage(self.getPolicy('ALLOW_V2'), '')
         self.inject(inv_msg)
 
+
 class XMPPOTRContextManager(OTRContextManager):
 
     def __init__(self, xmpp_client):
@@ -82,7 +83,8 @@ class OTRMeClient(ClientXMPP):
                 return
 
             event_payload = {
-                'name': msg['from'].bare,   # for now, until we know how to get the name
+                # for now, until we know how to get the name
+                'name': msg['from'].bare,
                 'jid': msg['from'].bare,
                 'resource': msg['from'].resource,
                 'message': strip_tags(message_text),
