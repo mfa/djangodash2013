@@ -11,7 +11,7 @@ class PGEventsView(BaseSseView):
         #self.pg_channel = request.user.username
         # testing
         if request.user.is_authenticated():
-            self.pg_channel = "events:%s" % (request.user.username, )
+            self.pg_channel = "events/%s" % (request.user.username, )
         else:
             raise # something 403ish
         return super(PGEventsView, self).dispatch(request, *args, **kwargs)

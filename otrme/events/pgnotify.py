@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import psycopg2.extensions
-import select # <= Jarus?
+import select
+
+import json
 
 from django.db import connection
 
@@ -30,4 +32,4 @@ def pg_notify(channel, payload=None):
     if payload is None:
         crs.execute('NOTIFY "{}";'.format(channel));
     else:
-        crs.execute('NOTIFY "{}", %s;'.format(channel), [payload]);
+        crs.execute('NOTIFY "{}", %s;'.format(channel), [json.dumps(payload)]);
