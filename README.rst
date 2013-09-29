@@ -36,7 +36,7 @@ Installation and usage
   pip install -r requirements.txt
 
   # change otrme/settings/local.py
-  # python manage.py syncdb --settings=otrme.settings.local
+  python manage.py syncdb --settings=otrme.settings.local
   
   # for jabber daemon
   python manage.py run_jabdaemon --settings=otrme.settings.local
@@ -44,3 +44,4 @@ Installation and usage
   # runserver (gevent based for SSE)
   python runserver.py
 
+  # log in with a real jabber account and its password
