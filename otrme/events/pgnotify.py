@@ -9,24 +9,31 @@ import psycopg2
 from django.conf import settings
 
 
-connection = psycopg2.connect(database=settings.DATABASES.get('default', {}).get('NAME'),
-                              user=settings.DATABASES.get('default', {}).get('USER'),
-                              password=settings.DATABASES.get('default', {}).get('PASSWORD'),
-                              host=settings.DATABASES.get('default', {}).get('HOST'),
-                              port=settings.DATABASES.get('default', {}).get('PORT'))
+connection = psycopg2.connect(database=settings
+                              .DATABASES.get('default', {}).get('NAME'),
+                              user=settings
+                              .DATABASES.get('default', {}).get('USER'),
+                              password=settings
+                              .DATABASES.get('default', {}).get('PASSWORD'),
+                              host=settings
+                              .DATABASES.get('default', {}).get('HOST'),
+                              port=settings
+                              .DATABASES.get('default', {}).get('PORT'))
 connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+
 
 def pg_listen(channel):
     crs = connection.cursor()
-    crs.execute('LISTEN "%s";' % channel);
+    crs.execute('LISTEN "%s";' % channel)
 
     while True:
         if select.select([connection], [], [], 5) == ([], [], []):
-            continue # Timeout
+            continue  # Timeout
         else:
             connection.poll()
             while connection.notifies:
                 yield connection.notifies.pop()
+
 
 def pg_notify(channel, payload=None):
     # usage for later:
@@ -37,6 +44,6 @@ def pg_notify(channel, payload=None):
     # pg_notify('testchannel', '["test", "123"]')
     crs = connection.cursor()
     if payload is None:
-        crs.execute('NOTIFY "{}";'.format(channel));
+        crs.execute('NOTIFY "{}";'.format(channel))
     else:
-        crs.execute('NOTIFY "{}", %s;'.format(channel), [json.dumps(payload)]);
+        crs.execute('NOTIFY "{}", %s;'.format(channel), [json.dumps(payload)])
