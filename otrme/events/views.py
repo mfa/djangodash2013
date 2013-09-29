@@ -3,6 +3,7 @@ from django_sse.views import BaseSseView
 from pgnotify import pg_listen
 import json
 
+
 class PGEventsView(BaseSseView):
     def dispatch(self, request, *args, **kwargs):
         # EventSource /events/ should work for all logged in users,
@@ -13,7 +14,7 @@ class PGEventsView(BaseSseView):
         if request.user.is_authenticated():
             self.pg_channel = "events/%s" % (request.user.username, )
         else:
-            raise # something 403ish
+            raise  # something 403ish
         return super(PGEventsView, self).dispatch(request, *args, **kwargs)
 
     def handle_message(self, message):
