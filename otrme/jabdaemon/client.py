@@ -1,9 +1,14 @@
 import json
 import logging
+
 from sleekxmpp import ClientXMPP
 
 from events.pgnotify import pg_notify
 from otrbackend.magic import OTRContextManager, OTRContext
+
+from django.contrib.auth.models import User
+from jabber.models import JabberRoster
+
 
 class XMPPOTRContext(OTRContext):
 
@@ -33,10 +38,14 @@ class XMPPOTRContextManager(OTRContextManager):
 class OTRMeClient(ClientXMPP):
 
     def __init__(self, jid, password):
+        self.django_user = User.objects.get(username=jid)
+
         super(OTRMeClient, self).__init__(jid, password)
         self.resource = 'OTRMe'
 
         self.otr = XMPPOTRContextManager(self)
+
+        self.register_plugin('xep_0054') # vCard support
 
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message)
@@ -44,14 +53,10 @@ class OTRMeClient(ClientXMPP):
         self.add_event_handler("roster_update", self.roster_update)
 
     def session_start(self, event):
+        # Request roster
+        self.get_roster(block=True)
+
         self.send_presence(pshow="chat", pstatus="Using OTRMe!", ppriority=20)
-        roster = self.get_roster()
-
-        print self.client_roster
-
-        for jid in self.client_roster:
-            print self.client_roster[jid]
-            print self.client_roster.presence(jid)
 
     def message(self, msg):
         plain_msg, was_encrypted = self.otr.incoming({
@@ -75,9 +80,33 @@ class OTRMeClient(ClientXMPP):
             )
 
     def changed_status(self, presence):
-        print presence['from']
-        print presence.get_type()
+        print "-" * 80
+        print presence
 
-    def roster_update(self, roster):
-        print roster
+        if presence['show'] == '':
+            show = 'available'
+        else:
+            show = presence['show']
+
+        self.django_user.roster_items.filter(
+            jid=presence['from'].bare,
+        ).update(
+            show=show,
+            status=presence['status']
+        )
+        print "-" * 80
+
+    def roster_update(self, event):
+        roster = self.client_roster
+
+        JabberRoster.objects.filter(account=self.django_user) \
+                            .exclude(jid__in=roster.keys()).delete()
+
+        current_jids = self.django_user.roster_items.all() \
+                                   .values_list('jid', flat=True)
+
+        for jid in self.client_roster:
+            if jid not in current_jids:
+                self.django_user.roster_items.create(jid=jid)
+
 
