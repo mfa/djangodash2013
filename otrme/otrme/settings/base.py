@@ -120,7 +120,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'jabdaemon'
+
+    'jabber',
+    'jabdaemon',
+    'events',
+    'otrbackend'
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
