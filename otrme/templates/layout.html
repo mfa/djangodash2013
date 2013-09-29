@@ -150,7 +150,7 @@
 		 </ul>
 		 <h3>All Users</h3>
 		 <ul>
-		   <li ng-repeat="user in users | orderBy:['status', 'jid']"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_channel(user.jid)">{{ user.jid }}</a> <b>{{ pretty_unread(user.unread) }} [{{ user.show }}]</b></li>
+		   <li ng-repeat="user in users | orderBy:['show', 'jid']"><span class="glyphicon glyphicon-user"></span> <a href="" ng-click="set_current_channel(user.jid)">{{ user.jid }}</a> <b>{{ pretty_unread(user.unread) }} [{{ user.show }}] [{{ user.status }}]</b></li>
 		 </ul>
 	       </div>
 	       {% endverbatim %}
