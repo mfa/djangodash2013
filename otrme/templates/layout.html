@@ -61,6 +61,7 @@
 
 	{% block content %}
 
+	{% if not user.is_authenticated %}
 	<div style="background-color: #8c8">
 	  <div class="container">
             <div class="row" >
@@ -80,7 +81,7 @@
               </div>
               <div class="col-xs-4" style="text-align: center">
 		<h1><i class="icon-github icon-4x"></i></h1>
-		<h4>Open source and build in 48h.</h4>
+		<h4>Open source and built in 48h.</h4>
 		otrme.de is a <a href="http://djangodash.com/teams/c4/three-followers/">DjangoDash 2013</a> project. Get the <a href="https://github.com/mfa/djangodash2013">sourcecode</a> on github.
 		<p>
 		</p>
@@ -88,6 +89,7 @@
             </div>
           </div>
         </div>
+	{% endif %}
 
 	<div style="background-color: #dfd">
 	  <div class="container">
@@ -158,6 +160,7 @@
             </div>
           </div>
       </div>
+	<div id="push"></div>
     </main>
 
 

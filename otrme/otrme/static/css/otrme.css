@@ -36,6 +36,14 @@ body {
   }
 }
 
+#content {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -62px;
+}
+
 footer {
     text-align: center;
     padding-top: 10px;
@@ -44,7 +52,9 @@ footer {
 .navbar-custom {
     background-color: #030;
 }
-a, a:active, a:hover {
+a, a:active, a:hover, 
+.navbar-inverse .navbar-nav > li > a:hover, 
+.navbar-inverse .navbar-nav > li > a:focus {
     color: #C83D1D;
     font-weight: bold;
 }
