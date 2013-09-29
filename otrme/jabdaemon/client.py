@@ -71,7 +71,7 @@ class OTRMeClient(ClientXMPP):
             }
             pg_notify(
                 'events/%s' % unicode(msg['from'].bare),
-                json.dumps(["message", event_payload])
+                ["message", json.dumps(event_payload)]
             )
 
     def changed_status(self, presence):
