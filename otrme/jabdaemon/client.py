@@ -6,7 +6,7 @@ from sleekxmpp import ClientXMPP
 from events.pgnotify import pg_notify
 from otrbackend.magic import OTRContextManager, OTRContext
 from django.utils.timezone import now
-
+from django.utils.html import strip_tags
 from django.contrib.auth.models import User
 from jabber.models import JabberRoster, JabberPresence
 
@@ -82,7 +82,7 @@ class OTRMeClient(ClientXMPP):
                 'name': msg['from'].bare,   # for now, until we know how to get the name
                 'jid': msg['from'].bare,
                 'resource': msg['from'].resource,
-                'message': message_text,
+                'message': strip_tags(message_text),
                 'time': str(now()),   # maybe add some conversion to local tz
                 'otr_state': context.state
             }
