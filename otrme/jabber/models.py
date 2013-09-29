@@ -1,14 +1,14 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
+VERIFIED_CHOICES = (
+    ('uv', 'unverified'),
+    ('fv', 'fingerprint verified'),
+    ('sv', 'shared secret verified')
+)
 
-class JabberUser(models.Model):
-    username = models.CharField(max_length=256)
-    domainname = models.CharField(max_length=256)
+class JabberConversation(models.Model):
 
-    @property
-    def jid(self):
-        return "%s@%s" % (self.username, self.domainname)
-
-    def __unicode__(self):
-        return self.jid
+    from_jid = models.ForeignKey(User, related_name='conversations')
+    to_jid = models.CharField(max_length=300)
+    verified = models.CharField(choices=VERIFIED_CHOICES, max_length=2)

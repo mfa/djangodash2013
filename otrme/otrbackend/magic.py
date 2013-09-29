@@ -26,7 +26,7 @@ class OTRContext(potr.context.Context):
 
     def inject(self, msg, appdata=None):
         # This method send some message from account to the target peer
-        log.debug('Call inject; %s => %s; %s', self.account, self.peer, msg)
+        log.debug('Call inject; %s => %s; %s', self.user, self.peer, msg)
 
     def setState(self, newstate):
         # Hook to catch changes at the state variable to notify user about
@@ -34,10 +34,19 @@ class OTRContext(potr.context.Context):
         log.debug('set State to %s', newstate)
         super(OTRContext, self).setState(newstate)
 
+    def plain_context(self):
+        return self.getState() == potr.STATE_PLAINTEXT
+
+    def encrypted_context(self):
+        return self.getState() == potr.STATE_ENCRYPTED
+
+    def finished_context(self):
+        return self.getState() == potr.STATE_FINISHED
 
 class OTRAccount(potr.context.Account):
 
     def __init__(self, jid):
+        print jid
         super(OTRAccount, self).__init__(jid, '-', 1024)
         self.keyFilePath = os.path.join("/tmp/otr", jid)
 
@@ -59,7 +68,7 @@ class OTRAccount(potr.context.Account):
             pass
 
 
-class MyOtrContextManager:
+class OTRContextManager(object):
 
     def __init__(self, jid):
         # jid = logged in user
@@ -76,30 +85,19 @@ class MyOtrContextManager:
         # msg.dict = from, body, type
         logging.getLogger().debug("Incoming message by %s: %s",
                                   self.account, msg)
-        otrctx = self.context_to(str(msg['from']))
+        otrctx = self.context_to(msg['from'])
 
-        encrypted = True
         try:
             # attempt to pass the message through *potr.context.Context.receiveMessage*
             # there are a couple of possible cases
             res = otrctx.receiveMessage(msg["body"])
+            return res, True
         except potr.context.UnencryptedMessage:
             # potr raises an UnencryptedMessage exception when a message is
             # unencrypted but the context is encrypted
             # this indicates a plaintext message came through a supposedly encrypted
             # channel it is appropriate here to warn your user!
-            encrypted = False
-
-        logging.getLogger().debug("incoming: encrypted [%s]", encrypted)
-        if encrypted == False:
-            if msg['type'] in ('chat', 'normal'):
-                # here is where you handle plain text messages
-                pass
-        else:
-            if res[0] != None:
-                # here is where you handle decrypted messages.  receiveMessage()
-                # will return a tuple, the first part of which will be the decrypted message
-                print res
+            return msg['body'], False
 
     def outgoing(self, jid, msg):
         otrctx = self.context_to(jid)
