@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# using code from https://blog.darmasoft.net/2013/06/30/using-pure-python-otr.html
+# using code from
+# https://blog.darmasoft.net/2013/06/30/using-pure-python-otr.html
 
 import potr
 import os
@@ -81,14 +82,16 @@ class OTRContextManager(object):
         otrctx = self.context_to(msg['from'])
 
         try:
-            # attempt to pass the message through *potr.context.Context.receiveMessage*
+            # attempt to pass the message through
+            # *potr.context.Context.receiveMessage*
             # there are a couple of possible cases
             res = otrctx.receiveMessage(msg["body"])
             return res, True
         except potr.context.UnencryptedMessage:
             # potr raises an UnencryptedMessage exception when a message is
             # unencrypted but the context is encrypted
-            # this indicates a plaintext message came through a supposedly encrypted
+            # this indicates a plaintext message
+            # came through a supposedly encrypted
             # channel it is appropriate here to warn your user!
             return msg['body'], False
 
