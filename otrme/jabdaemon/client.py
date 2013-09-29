@@ -73,16 +73,16 @@ class OTRMeClient(ClientXMPP):
 
         context = self.otr.context_to(unicode(msg['from']))
         if msg['type'] in ('chat', 'normal'):
-            data = unicode(msg['from']).split('/')
-            jid = data[0]
-            resource = ''
-            if len(data) > 1:
-                resource = data[1]
+            if was_encrypted:
+                message_text = plain_msg[0]
+            else:
+                message_text = plain_msg
+
             event_payload = {
-                'name': jid,   # for now, until we know how to get the name
-                'jid': jid,
-                'resource': resource,
-                'message': plain_msg[0],
+                'name': msg['from'].bare,   # for now, until we know how to get the name
+                'jid': msg['from'].bare,
+                'resource': msg['from'].resource,
+                'message': message_text,
                 'time': str(now()),   # maybe add some conversion to local tz
                 'otr_state': context.state
             }
@@ -95,25 +95,45 @@ class OTRMeClient(ClientXMPP):
         print "-" * 80
         print presence
 
-        if presence['show'] == '':
+        if presence['type'] == 'unavailable':
+            show = 'unavailable'
+        elif presence['show'] == '':
             show = 'available'
         else:
             show = presence['show']
 
-        print presence['priority']
-        print presence['from'].resource
+        if show != 'unavailable':
+            status = presence['status']
+        else:
+            status = ''
+
+        roster_item = self.django_user.roster_items.get_or_create(
+            jid=presence['from'].bare,
+        )[0]
 
         _presence, created = JabberPresence.objects.get_or_create(
-            jid=self.django_user.roster_items.get_or_create(
-                jid=presence['from'].bare,
-            )[0],
+            jid=roster_item,
             resource=presence['from'].resource,
             priority=presence['priority']
         )
 
         _presence.show = show
-        _presence.status = presence['status']
+        _presence.status = status
         _presence.save()
+
+        # Check was the presence update of the highest resource for this
+        # roster item than notify frontend about status change
+        highest_resource = roster_item.presences.all() \
+                                      .order_by('-resource')[0]
+        if highest_resource.pk == _presence.pk:
+            pg_notify(
+                'events/%s' % unicode(self.boundjid.bare),
+                ["status_changed", {
+                    'jid': presence['from'].bare,
+                    'show': show,
+                    'status': presence['status']
+                }]
+            )
 
         print "-" * 80
 
@@ -123,9 +143,14 @@ class OTRMeClient(ClientXMPP):
         JabberRoster.objects.filter(account=self.django_user) \
                             .exclude(jid__in=roster.keys()).delete()
 
-        current_jids = self.django_user.roster_items.all().values_list(
-            'jid', flat=True)
+        current_jids = self.django_user.roster_items.all() \
+                                       .values_list('jid', flat=True)
 
         for jid in self.client_roster:
             if jid not in current_jids:
                 self.django_user.roster_items.create(jid=jid)
+
+        pg_notify(
+            'events/%s' % unicode(self.boundjid.bare),
+            ["roster_updated", None]
+        )
