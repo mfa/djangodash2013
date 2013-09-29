@@ -77,10 +77,16 @@ class Command(BaseCommand):
 
             print event['to_jid']
 
-            print self.clients[jid].otr.contexts
-            self.clients[jid].otr.outgoing(event['to_jid'], event['message'])
+            context = self.clients[jid].otr.context_to(event['to_jid'])
 
             self.logger.debug("Sent message from %s to %s",
                               event['to_jid'], event['jid'])
+
+            if context.state != 1:
+                context.start_otr()
+                self.logger.error("OTR not initialized")
+            else:
+                self.clients[jid].otr.outgoing(event['to_jid'],
+                                               event['message'])
         else:
             self.logger.error("Unknown event: %s", event)
