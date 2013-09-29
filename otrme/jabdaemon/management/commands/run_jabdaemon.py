@@ -74,8 +74,10 @@ class Command(BaseCommand):
             if jid not in self.clients:
                 self.logger.debug("JID %s is not connected", jid)
                 return
-            conversation_context = self.clients[jid].otr.context_to(event['to_jid'])
-            conversation_context.inject(event['message'])
+
+            print self.clients[jid].otr.contexts
+            self.clients[jid].otr.outgoing(event['to_jid'], event['message'])
+
             self.logger.debug("Sent message from %s to %s",
                               event['to_jid'], event['jid'])
         else:
