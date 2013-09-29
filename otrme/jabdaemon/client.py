@@ -47,18 +47,11 @@ class OTRMeClient(ClientXMPP):
         self.send_presence(pshow="chat", pstatus="Using OTRMe!", ppriority=20)
         roster = self.get_roster()
 
+        print self.client_roster
+
         for jid in self.client_roster:
             print self.client_roster[jid]
-
-            connections = self.client_roster.presence(jid)
-            for res, pres in connections.items():
-                print res, pres
-
-        print ""
-        print roster
-        print ""
-        print self.client_roster
-        print ""
+            print self.client_roster.presence(jid)
 
     def message(self, msg):
         plain_msg, was_encrypted = self.otr.incoming({
@@ -72,7 +65,7 @@ class OTRMeClient(ClientXMPP):
             event_payload = {
                 'name': 'Gentle',
                 'jid': unicode(msg['from']),
-                'message': plain_msg,
+                'message': plain_msg[0],
                 'time': '2013-09-09 18:24',
                 'otr_state': context.state
             }
