@@ -87,6 +87,7 @@ angular.module('controllers',[])
 	  } else {
 	      $scope.new_message_text = "";
 	  };
+	  OtrmeApi.set_focus(channel);
 	  $scope.current_channel_name = channel;
 	  $scope.current_user().unread = 0;
       };
