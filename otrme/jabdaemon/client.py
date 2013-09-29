@@ -5,6 +5,7 @@ from sleekxmpp import ClientXMPP
 
 from events.pgnotify import pg_notify
 from otrbackend.magic import OTRContextManager, OTRContext
+from django.utils.timezone import now
 
 from django.contrib.auth.models import User
 from jabber.models import JabberRoster
@@ -75,11 +76,11 @@ class OTRMeClient(ClientXMPP):
             if len(data) > 1:
                 resource = data[1]
             event_payload = {
-                'name': 'Gentle',
+                'name': jid,   # for now, until we know how to get the name
                 'jid': jid,
                 'resource': resource,
                 'message': plain_msg[0],
-                'time': '2013-09-09 18:24',
+                'time': str(now()),   # maybe add some conversion to local tz
                 'otr_state': context.state
             }
             pg_notify(
