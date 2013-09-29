@@ -111,7 +111,6 @@ angular.module('controllers',[])
       es.addEventListener('message', handleMessage, false);
 
       var handleRoster = function() {
-	  alert("Roster update triggered");
 	  $scope.$apply(function () {
 	      OtrmeApi.get_roster(function(data){
 		  $scope.users = data;
@@ -126,7 +125,6 @@ angular.module('controllers',[])
       var handleStatus = function(data) {
 	  $scope.$apply(function () {
 	      obj = JSON.parse(data.data);
-	      alert("Handle status: " + data.data);
 	      if (!$scope.get_user(obj.jid)) {
 		  $scope.users.push(obj);
 	      } else {

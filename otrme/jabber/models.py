@@ -22,7 +22,10 @@ class JabberRoster(models.Model):
 
     @property
     def highest_resource(self):
-        return self.presences.all().order_by('-priority')[0]
+        x = self.presences.all().order_by('-priority')
+        if x:
+            return x[0]
+        return None
 
 
 class JabberPresence(models.Model):
