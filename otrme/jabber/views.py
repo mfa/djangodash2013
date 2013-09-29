@@ -35,13 +35,14 @@ class JabberSendMessageView(LoginRequiredMixin, View):
             raise Http404
 
         event_payload = {
+            'type': 'message',
             'jid': self.request.POST.get('jid'),
             'to_jid': self.kwargs.get('to'),
             'message': self.request.POST.get('message'),
         }
         pg_notify(
             'jab-control',
-            ["message", json.dumps(event_payload)]
+            event_payload
         )
 
         return HttpResponse(json.dumps({'success': True}))
