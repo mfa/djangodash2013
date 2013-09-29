@@ -7,11 +7,13 @@ VERIFIED_CHOICES = (
     ('sv', 'shared secret verified')
 )
 
+
 class JabberConversation(models.Model):
 
     from_jid = models.ForeignKey(User, related_name='conversations')
     to_jid = models.CharField(max_length=300)
     verified = models.CharField(choices=VERIFIED_CHOICES, max_length=2)
+
 
 class JabberRoster(models.Model):
 

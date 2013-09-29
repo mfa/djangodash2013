@@ -22,6 +22,7 @@ class XMPPOTRContext(OTRContext):
                                   self.user, self.peer, msg)
         self.xmpp_client.send_message(mto=self.peer, mbody=msg)
 
+
 class XMPPOTRContextManager(OTRContextManager):
 
     def __init__(self, xmpp_client):
@@ -35,6 +36,7 @@ class XMPPOTRContextManager(OTRContextManager):
                                                   self.xmpp_client)
         return self.contexts[other]
 
+
 class OTRMeClient(ClientXMPP):
 
     def __init__(self, jid, password):
@@ -45,7 +47,7 @@ class OTRMeClient(ClientXMPP):
 
         self.otr = XMPPOTRContextManager(self)
 
-        self.register_plugin('xep_0054') # vCard support
+        self.register_plugin('xep_0054')  # vCard support
 
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message)
@@ -102,11 +104,9 @@ class OTRMeClient(ClientXMPP):
         JabberRoster.objects.filter(account=self.django_user) \
                             .exclude(jid__in=roster.keys()).delete()
 
-        current_jids = self.django_user.roster_items.all() \
-                                   .values_list('jid', flat=True)
+        current_jids = self.django_user.roster_items.all().values_list(
+            'jid', flat=True)
 
         for jid in self.client_roster:
             if jid not in current_jids:
                 self.django_user.roster_items.create(jid=jid)
-
-
