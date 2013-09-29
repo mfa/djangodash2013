@@ -45,8 +45,10 @@ angular.module('controllers',[])
 	  message['message'] = msgtext;
 	  message['jid'] = $scope.own_jid;
 	  OtrmeApi.send_message(channel, message, function(data) {
-	      $scope.add_message(channel, message);
-	      $scope.new_message_text = '';
+	      $scope.$apply(function () {
+		  $scope.add_message(channel, message);
+		  $scope.new_message_text = '';
+	      });
 	  });
       };
 
@@ -86,7 +88,7 @@ angular.module('controllers',[])
 	  if ($scope.cached_input[channel]) {
 	      $scope.new_message_text = $scope.cached_input[channel];
 	  } else {
-	      $scope.new_message_text = "";
+	      $scope.new_message_text = '';
 	  };
 	  OtrmeApi.set_focus(channel);
 	  $scope.current_channel_name = channel;
